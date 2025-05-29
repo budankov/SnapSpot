@@ -1,11 +1,6 @@
-import { useLoadFonts } from "../hooks/useLoadFonts";
-
-import LoginScreen from "../screens/auth/LoginScreen";
+import { Redirect } from "expo-router";
 
 export default function Index() {
-  const { loaded, error } = useLoadFonts();
-
-  if (!loaded && !error) return null;
-
-  return <LoginScreen />;
+  // Тут можна додати перевірку авторизації
+  return <Redirect href="/login" />;
 }

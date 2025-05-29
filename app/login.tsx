@@ -1,0 +1,135 @@
+import { useState } from "react";
+import {
+  Dimensions,
+  Keyboard,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from "react-native";
+
+import { Link } from "expo-router";
+
+import AuthLayout from "../components/AuthLayout";
+
+const { height } = Dimensions.get("window");
+
+const initialState = {
+  email: "",
+  password: "",
+};
+
+const LoginScreen = () => {
+  const [state, setState] = useState(initialState);
+
+  const submitForm = () => {
+    console.log(state);
+    Keyboard.dismiss();
+    setState(initialState);
+  };
+
+  return (
+    <AuthLayout>
+      <View style={styles.authWrapper}>
+        <View style={styles.authForm}>
+          <Text style={styles.authTitle}>Увійти</Text>
+          <TextInput
+            style={styles.authInput}
+            placeholder="Адреса електронної пошти"
+            placeholderTextColor="#BDBDBD"
+            value={state.email}
+            onChangeText={(value) =>
+              setState((prevState) => ({ ...prevState, email: value }))
+            }
+          />
+          <TextInput
+            style={styles.authInput}
+            secureTextEntry={true}
+            placeholder="Пароль"
+            placeholderTextColor="#BDBDBD"
+            value={state.password}
+            onChangeText={(value) =>
+              setState((prevState) => ({
+                ...prevState,
+                password: value,
+              }))
+            }
+          />
+          <TouchableOpacity
+            style={styles.authBtn}
+            activeOpacity={0.8}
+            onPress={submitForm}
+          >
+            <Text style={styles.authBtnText}>Увійти</Text>
+          </TouchableOpacity>
+          <Link href="/registration" replace>
+            <Text style={styles.authSingInText}>
+              Немає облікового запису? Зареєструватись
+            </Text>
+          </Link>
+        </View>
+      </View>
+    </AuthLayout>
+  );
+};
+
+const styles = StyleSheet.create({
+  authWrapper: {
+    height: height * 0.6,
+    backgroundColor: "#FFF",
+    borderTopLeftRadius: 25,
+    borderTopRightRadius: 25,
+  },
+  authForm: {
+    flex: 1,
+    marginHorizontal: 40,
+  },
+  authTitle: {
+    fontFamily: "Roboto",
+    fontWeight: "500",
+    fontSize: 30,
+    textAlign: "center",
+    marginBottom: 33,
+    marginTop: 32,
+  },
+  authInput: {
+    borderWidth: 1,
+    color: "#212121",
+    borderColor: "#E8E8E8",
+    borderRadius: 8,
+    height: 50,
+    backgroundColor: "#F6F6F6",
+    padding: 16,
+    fontFamily: "Roboto",
+    fontWeight: "400",
+    fontSize: 16,
+    marginBottom: 16,
+  },
+  authBtn: {
+    backgroundColor: "#FF6C00",
+    borderRadius: 100,
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 33,
+  },
+  authBtnText: {
+    color: "#FFF",
+    fontFamily: "Roboto",
+    fontWeight: "400",
+    fontSize: 16,
+    paddingTop: 16,
+    paddingBottom: 16,
+  },
+  authSingInText: {
+    color: "#1B4371",
+    marginLeft: "auto",
+    marginRight: "auto",
+    marginTop: 16,
+    fontFamily: "Roboto-Regular",
+    fontWeight: "400",
+    fontSize: 16,
+  },
+});
+
+export default LoginScreen;
