@@ -1,4 +1,4 @@
-import { Link } from "expo-router";
+import { Link, useRouter } from "expo-router";
 import { useState } from "react";
 import {
   Dimensions,
@@ -21,10 +21,13 @@ const initialState = {
 export default function RegistrationScreen() {
   const [state, setState] = useState(initialState);
 
+  const router = useRouter();
+
   const submitForm = () => {
     console.log(state);
     Keyboard.dismiss();
     setState(initialState);
+    router.replace("/(tabs)/home");
   };
 
   return (

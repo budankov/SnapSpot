@@ -8,8 +8,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-
-import { Link } from "expo-router";
+import { Link, useRouter } from "expo-router";
 
 const { height } = Dimensions.get("window");
 
@@ -21,10 +20,13 @@ const initialState = {
 export default function LoginScreen() {
   const [state, setState] = useState(initialState);
 
+  const router = useRouter();
+
   const submitForm = () => {
     console.log(state);
     Keyboard.dismiss();
     setState(initialState);
+    router.replace("/(tabs)/home");
   };
 
   return (
