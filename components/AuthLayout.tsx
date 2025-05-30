@@ -10,21 +10,22 @@ import {
 
 const AuthLayout = ({ children }) => {
   return (
-    <View style={styles.container}>
-      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <View style={styles.container}>
         <ImageBackground
           style={styles.bgImage}
           source={require("../assets/images/bg-image.jpg")}
         >
           <KeyboardAvoidingView
+            style={{ flex: 1 }}
             behavior={Platform.OS === "ios" ? "padding" : "height"}
             keyboardVerticalOffset={-80}
           >
             {children}
           </KeyboardAvoidingView>
         </ImageBackground>
-      </TouchableWithoutFeedback>
-    </View>
+      </View>
+    </TouchableWithoutFeedback>
   );
 };
 
