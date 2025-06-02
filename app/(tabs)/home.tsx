@@ -3,22 +3,20 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   increaseTotalLike,
   increaseTotalLikeByAmount,
-} from "../../redux/actions/dataActions";
+} from "../../store/redusers/dataReduser";
 
 export default function HomeScreen() {
-  const totalLikes = useSelector((state) => state.totalLikes);
-  const userName = useSelector((state) => state.userName);
-
+  const totalLikes = useSelector((state) => state.dataReducer.totalLikes);
   const dispatch = useDispatch();
 
   return (
     <View style={styles.container}>
       <Text style={styles.text}>Home Screen</Text>
       <Text>Total likes: {totalLikes}</Text>
-      <Text>User Name: {userName}</Text>
+      <Text>User Name: Ale</Text>
       <Button title="+" onPress={() => dispatch(increaseTotalLike())} />
       <Button
-        title="increase likes by amount"
+        title="By amount"
         onPress={() => dispatch(increaseTotalLikeByAmount(20))}
       />
     </View>

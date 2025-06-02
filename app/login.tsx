@@ -1,5 +1,7 @@
+import { Link, useRouter } from "expo-router";
 import { useState } from "react";
 import {
+  Button,
   Dimensions,
   Keyboard,
   StyleSheet,
@@ -8,7 +10,11 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { Link, useRouter } from "expo-router";
+
+import { signInWithEmailAndPassword, signOut } from "firebase/auth";
+import { auth } from "../firebase/firebaseConfig";
+
+import { showMessage } from "react-native-flash-message";
 
 const { height } = Dimensions.get("window");
 
@@ -22,12 +28,48 @@ export default function LoginScreen() {
 
   const router = useRouter();
 
-  const submitForm = () => {
-    console.log(state);
-    Keyboard.dismiss();
-    setState(initialState);
-    router.replace("/(tabs)/home");
+  const submitForm = async () => {
+    try {
+      const userCredential = await signInWithEmailAndPassword(
+        auth,
+        state.email,
+        state.password
+      );
+      Keyboard.dismiss();
+      console.log(userCredential);
+      // router.replace("/(tabs)/home");
+    } catch (error: any) {
+      let errorMessage = "";
+
+      if (error.code === "auth/email-already-in-use") {
+        errorMessage = "This email is already in use! you can't use this email";
+      } else if (error.code === "auth/invalid-email") {
+        errorMessage = "The email address is invalid.";
+      } else if (error.code === "auth/weak-password") {
+        errorMessage = "The password is too weak.";
+      } else {
+        errorMessage = "An error occurred during sign-up.";
+      }
+
+      showMessage({
+        type: "danger",
+        message: errorMessage,
+      });
+    }
   };
+
+  const handleLogout = async () => {
+    try {
+      await signOut(auth);
+      console.log("🚪 User signed out");
+      // Можеш перекинути користувача назад на логін
+      router.replace("/login"); // або navigation.navigate("login")
+    } catch (error) {
+      console.error("Logout error:", error);
+    }
+  };
+
+  // console.log(auth);
 
   return (
     <View style={styles.authWrapper}>
@@ -62,6 +104,7 @@ export default function LoginScreen() {
         >
           <Text style={styles.authBtnText}>Увійти</Text>
         </TouchableOpacity>
+        <Button title="Log Out" onPress={handleLogout} />
         <Link style={{ marginTop: 16 }} href="/registration" replace>
           <Text style={styles.authSingInText}>
             Немає облікового запису? Зареєструватись

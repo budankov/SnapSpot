@@ -3,7 +3,7 @@ import { StatusBar } from "expo-status-bar";
 import { Provider } from "react-redux";
 
 import AuthLayout from "../components/AuthLayout";
-import store from "../redux/store";
+import { store } from "../store/store";
 
 export default function RootLayout() {
   return (
