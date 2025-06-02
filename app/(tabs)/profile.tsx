@@ -11,10 +11,10 @@ export default function ProfileScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#cb6565",
+    // backgroundColor: "#cb6565",
   },
   text: {
     fontSize: 20,
-    color: "#ffffff",
+    color: "#000000",
   },
 });
