@@ -1,7 +1,6 @@
 import { Link, useRouter } from "expo-router";
 import { useState } from "react";
 import {
-  Button,
   Dimensions,
   Keyboard,
   StyleSheet,
@@ -11,7 +10,7 @@ import {
   View,
 } from "react-native";
 
-import { signInWithEmailAndPassword, signOut } from "firebase/auth";
+import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "../firebase/firebaseConfig";
 
 import { showMessage } from "react-native-flash-message";
@@ -37,8 +36,9 @@ export default function LoginScreen() {
       );
       Keyboard.dismiss();
       console.log(userCredential);
-      // router.replace("/(tabs)/home");
+      router.replace("/(tabs)/home");
     } catch (error: any) {
+      console.log(error);
       let errorMessage = "";
 
       if (error.code === "auth/email-already-in-use") {
@@ -57,19 +57,6 @@ export default function LoginScreen() {
       });
     }
   };
-
-  const handleLogout = async () => {
-    try {
-      await signOut(auth);
-      console.log("🚪 User signed out");
-      // Можеш перекинути користувача назад на логін
-      router.replace("/login"); // або navigation.navigate("login")
-    } catch (error) {
-      console.error("Logout error:", error);
-    }
-  };
-
-  // console.log(auth);
 
   return (
     <View style={styles.authWrapper}>
@@ -104,7 +91,6 @@ export default function LoginScreen() {
         >
           <Text style={styles.authBtnText}>Увійти</Text>
         </TouchableOpacity>
-        <Button title="Log Out" onPress={handleLogout} />
         <Link style={{ marginTop: 16 }} href="/registration" replace>
           <Text style={styles.authSingInText}>
             Немає облікового запису? Зареєструватись

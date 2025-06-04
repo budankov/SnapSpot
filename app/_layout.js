@@ -1,5 +1,6 @@
 import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
+import FlashMessage from "react-native-flash-message";
 import { Provider } from "react-redux";
 
 import AuthLayout from "../components/AuthLayout";
@@ -22,6 +23,7 @@ export default function RootLayout() {
           <Stack.Screen name="registration" />
         </Stack>
       </AuthLayout>
+      <FlashMessage position="top" />
     </Provider>
   );
 }

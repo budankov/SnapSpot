@@ -1,24 +1,25 @@
+import { useRouter } from "expo-router";
+import { signOut } from "firebase/auth";
 import { Button, StyleSheet, Text, View } from "react-native";
-import { useDispatch, useSelector } from "react-redux";
-import {
-  increaseTotalLike,
-  increaseTotalLikeByAmount,
-} from "../../store/redusers/dataReduser";
+import { auth } from "../../firebase/firebaseConfig";
 
 export default function HomeScreen() {
-  const totalLikes = useSelector((state) => state.dataReducer.totalLikes);
-  const dispatch = useDispatch();
+  const router = useRouter();
+
+  const handleLogout = async () => {
+    try {
+      await signOut(auth);
+      console.log("🚪 User signed out");
+      router.replace("/login");
+    } catch (error) {
+      console.error("Logout error:", error);
+    }
+  };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>Home Screen</Text>
-      <Text>Total likes: {totalLikes}</Text>
-      <Text>User Name: Ale</Text>
-      <Button title="+" onPress={() => dispatch(increaseTotalLike())} />
-      <Button
-        title="By amount"
-        onPress={() => dispatch(increaseTotalLikeByAmount(20))}
-      />
+      <Text style={styles.text}>Вийти</Text>
+      <Button title="+" onPress={() => handleLogout()} />
     </View>
   );
 }
