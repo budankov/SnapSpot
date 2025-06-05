@@ -17,7 +17,9 @@ export default function HomeScreen() {
     try {
       await dispatch(logoutUser()).unwrap(); // unwrap щоб чекати завершення thunk
       console.log("🚪 User signed out");
-      router.replace("../auth/login");
+      setTimeout(() => {
+        router.replace("/auth/login");
+      }, 100);
     } catch (error) {
       console.error("Logout error:", error);
     }
@@ -26,7 +28,7 @@ export default function HomeScreen() {
   return (
     <View style={styles.container}>
       <Text style={styles.text}>Вийти</Text>
-      <Text style={styles.text}>Привіт, {user.displayName}!</Text>
+      {user && <Text style={styles.text}>Привіт, {user.displayName}!</Text>}
       <Button title="Вийти" onPress={handleLogout} disabled={loading} />
     </View>
   );
