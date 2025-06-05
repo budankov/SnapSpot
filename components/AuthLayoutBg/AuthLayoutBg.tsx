@@ -8,13 +8,13 @@ import {
   View,
 } from "react-native";
 
-const AuthLayout = ({ children }) => {
+const AuthLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View style={styles.container}>
         <ImageBackground
           style={styles.bgImage}
-          source={require("../assets/images/bg-image.jpg")}
+          source={require("../../assets/images/bg-image.jpg")}
         >
           <KeyboardAvoidingView
             style={{ flex: 1 }}

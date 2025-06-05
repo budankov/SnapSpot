@@ -1,6 +1,7 @@
 import { Link, useRouter } from "expo-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
+  ActivityIndicator,
   Dimensions,
   Keyboard,
   StyleSheet,
@@ -10,10 +11,11 @@ import {
   View,
 } from "react-native";
 
-import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../firebase/firebaseConfig";
-
+import { RootState } from "@/redux/store";
 import { showMessage } from "react-native-flash-message";
+import { useSelector } from "react-redux";
+import { useAppDispatch } from "../../redux/hooks";
+import { loginUser } from "../../redux/reducers/authSlice";
 
 const { height } = Dimensions.get("window");
 
@@ -24,38 +26,31 @@ const initialState = {
 
 export default function LoginScreen() {
   const [state, setState] = useState(initialState);
-
+  const dispatch = useAppDispatch();
   const router = useRouter();
 
-  const submitForm = async () => {
-    try {
-      const userCredential = await signInWithEmailAndPassword(
-        auth,
-        state.email,
-        state.password
-      );
+  const { user, loading, error } = useSelector(
+    (state: RootState) => state.auth
+  );
+
+  useEffect(() => {
+    if (user) {
       Keyboard.dismiss();
-      console.log(userCredential);
-      router.replace("/(tabs)/home");
-    } catch (error: any) {
-      console.log(error);
-      let errorMessage = "";
+      router.replace("../(tabs)/home");
+    }
+  }, [user]);
 
-      if (error.code === "auth/email-already-in-use") {
-        errorMessage = "This email is already in use! you can't use this email";
-      } else if (error.code === "auth/invalid-email") {
-        errorMessage = "The email address is invalid.";
-      } else if (error.code === "auth/weak-password") {
-        errorMessage = "The password is too weak.";
-      } else {
-        errorMessage = "An error occurred during sign-up.";
-      }
-
+  useEffect(() => {
+    if (error) {
       showMessage({
         type: "danger",
-        message: errorMessage,
+        message: error,
       });
     }
+  }, [error]);
+
+  const submitForm = () => {
+    dispatch(loginUser({ email: state.email, password: state.password }));
   };
 
   return (
@@ -84,14 +79,21 @@ export default function LoginScreen() {
             }))
           }
         />
+
         <TouchableOpacity
           style={styles.authBtn}
           activeOpacity={0.8}
           onPress={submitForm}
+          disabled={loading}
         >
-          <Text style={styles.authBtnText}>Увійти</Text>
+          {loading ? (
+            <ActivityIndicator color="#fff" />
+          ) : (
+            <Text style={styles.authBtnText}>Увійти</Text>
+          )}
         </TouchableOpacity>
-        <Link style={{ marginTop: 16 }} href="/registration" replace>
+
+        <Link style={{ marginTop: 16 }} href="./registration" replace>
           <Text style={styles.authSingInText}>
             Немає облікового запису? Зареєструватись
           </Text>

@@ -1,5 +1,5 @@
 import { Link, useRouter } from "expo-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Dimensions,
   Keyboard,
@@ -9,6 +9,12 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+
+import { RootState } from "@/redux/store";
+import { showMessage } from "react-native-flash-message";
+import { useSelector } from "react-redux";
+import { useAppDispatch } from "../../redux/hooks";
+import { signUpUser } from "../../redux/reducers/authSlice";
 
 const { height } = Dimensions.get("window");
 
@@ -20,14 +26,37 @@ const initialState = {
 
 export default function RegistrationScreen() {
   const [state, setState] = useState(initialState);
-
+  const dispatch = useAppDispatch();
   const router = useRouter();
 
+  const { user, loading, error } = useSelector(
+    (state: RootState) => state.auth
+  );
+
+  useEffect(() => {
+    if (user) {
+      Keyboard.dismiss();
+      router.replace("../(tabs)/home");
+    }
+  }, [user]);
+
+  useEffect(() => {
+    if (error) {
+      showMessage({
+        type: "danger",
+        message: error,
+      });
+    }
+  }, [error]);
+
   const submitForm = () => {
-    console.log(state);
-    Keyboard.dismiss();
-    setState(initialState);
-    router.replace("/(tabs)/home");
+    dispatch(
+      signUpUser({
+        nickname: state.nickname,
+        email: state.email,
+        password: state.password,
+      })
+    );
   };
 
   return (
@@ -72,7 +101,7 @@ export default function RegistrationScreen() {
         >
           <Text style={styles.authBtnText}>Зареєструватись</Text>
         </TouchableOpacity>
-        <Link style={{ marginTop: 16 }} href="/login" replace>
+        <Link style={{ marginTop: 16 }} href="./login" replace>
           <Text style={styles.authSingInText}>
             Вже є обліковий запис? Увійти
           </Text>
