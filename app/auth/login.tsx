@@ -1,9 +1,8 @@
-import { Link, useRouter } from "expo-router";
+import { Link } from "expo-router";
 import { useEffect, useState } from "react";
 import {
   ActivityIndicator,
   Dimensions,
-  Keyboard,
   StyleSheet,
   Text,
   TextInput,
@@ -27,21 +26,12 @@ const initialState = {
 export default function LoginScreen() {
   const [state, setState] = useState(initialState);
   const dispatch = useAppDispatch();
-  const router = useRouter();
 
-  const { user, loading, error } = useSelector(
-    (state: RootState) => state.auth
-  );
-
-  useEffect(() => {
-    if (user) {
-      Keyboard.dismiss();
-      router.replace("../(tabs)/home");
-    }
-  }, [user]);
+  const { loading, error } = useSelector((state: RootState) => state.auth);
 
   useEffect(() => {
     if (error) {
+      console.log(error);
       showMessage({
         type: "danger",
         message: error,

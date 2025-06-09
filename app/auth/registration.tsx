@@ -1,8 +1,8 @@
-import { Link, useRouter } from "expo-router";
+import { Link } from "expo-router";
 import { useEffect, useState } from "react";
 import {
+  ActivityIndicator,
   Dimensions,
-  Keyboard,
   StyleSheet,
   Text,
   TextInput,
@@ -27,28 +27,18 @@ const initialState = {
 export default function RegistrationScreen() {
   const [state, setState] = useState(initialState);
   const dispatch = useAppDispatch();
-  const router = useRouter();
 
-  const { user, loading, error } = useSelector(
-    (state: RootState) => state.auth
-  );
-
-  useEffect(() => {
-    if (user) {
-      Keyboard.dismiss();
-      router.replace("../(tabs)/home");
-    }
-  }, [user]);
+  const { loading, error } = useSelector((state: RootState) => state.auth);
 
   useEffect(() => {
     if (error) {
+      console.log(error);
       showMessage({
         type: "danger",
         message: error,
       });
     }
   }, [error]);
-
   const submitForm = () => {
     dispatch(
       signUpUser({
@@ -98,8 +88,13 @@ export default function RegistrationScreen() {
           style={styles.authBtn}
           activeOpacity={0.8}
           onPress={submitForm}
+          disabled={loading}
         >
-          <Text style={styles.authBtnText}>Зареєструватись</Text>
+          {loading ? (
+            <ActivityIndicator color="#fff" />
+          ) : (
+            <Text style={styles.authBtnText}>Зареєструватись</Text>
+          )}
         </TouchableOpacity>
         <Link style={{ marginTop: 16 }} href="./login" replace>
           <Text style={styles.authSingInText}>
