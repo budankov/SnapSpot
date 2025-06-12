@@ -24,6 +24,7 @@ export default function TabsLayout() {
           tabBarActiveBackgroundColor: "#FF6C00",
           tabBarInactiveTintColor: "#212121",
           tabBarItemStyle: {
+            overflow: "hidden",
             borderRadius: 20,
             marginTop: 4,
             marginBottom: 4,
