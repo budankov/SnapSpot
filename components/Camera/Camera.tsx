@@ -51,23 +51,22 @@ export default function CameraComponent({
 
   return (
     <View style={styles.container}>
-      <CameraView ref={cameraRef} style={styles.camera} facing={facing}>
-        <View style={styles.buttonContainer}>
-          <View style={styles.buttonTopContainer}>
-            <TouchableOpacity onPress={toggleCameraFacing}>
-              <Ionicons name="camera-reverse-outline" size={40} color="white" />
-            </TouchableOpacity>
-            <TouchableOpacity onPress={handleClose}>
-              <AntDesign name="close" size={40} color="white" />
-            </TouchableOpacity>
-          </View>
-          <View style={styles.buttonBottomContainer}>
-            <TouchableOpacity style={styles.buttonSnap} onPress={takePhoto}>
-              <Entypo name="circle" size={50} color="black" />
-            </TouchableOpacity>
-          </View>
+      <CameraView ref={cameraRef} style={styles.camera} facing={facing} />
+      <View style={styles.buttonContainer}>
+        <View style={styles.buttonTopContainer}>
+          <TouchableOpacity onPress={toggleCameraFacing}>
+            <Ionicons name="camera-reverse-outline" size={40} color="white" />
+          </TouchableOpacity>
+          <TouchableOpacity onPress={handleClose}>
+            <AntDesign name="close" size={40} color="white" />
+          </TouchableOpacity>
         </View>
-      </CameraView>
+        <View style={styles.buttonBottomContainer}>
+          <TouchableOpacity style={styles.buttonSnap} onPress={takePhoto}>
+            <Entypo name="circle" size={50} color="black" />
+          </TouchableOpacity>
+        </View>
+      </View>
     </View>
   );
 }
@@ -76,30 +75,24 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: "center",
-  },
-  message: {
-    textAlign: "center",
-    paddingBottom: 10,
+    position: "relative",
   },
   camera: {
     flex: 1,
   },
   buttonContainer: {
-    flex: 1,
-  },
-  buttonTopContainer: {
-    flex: 1,
-    flexDirection: "row",
+    ...StyleSheet.absoluteFillObject,
     justifyContent: "space-between",
     paddingHorizontal: 20,
     paddingTop: 20,
-  },
-
-  buttonBottomContainer: {
-    flex: 1,
-    flexDirection: "column-reverse",
-    alignItems: "center",
     paddingBottom: 20,
+  },
+  buttonTopContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
+  buttonBottomContainer: {
+    alignItems: "center",
   },
   buttonSnap: {
     justifyContent: "center",
@@ -108,15 +101,5 @@ const styles = StyleSheet.create({
     height: 60,
     borderRadius: 50,
     backgroundColor: "#fff",
-  },
-  button: {
-    flex: 1,
-    alignSelf: "flex-end",
-    alignItems: "center",
-  },
-  text: {
-    fontSize: 24,
-    fontWeight: "bold",
-    color: "white",
   },
 });
