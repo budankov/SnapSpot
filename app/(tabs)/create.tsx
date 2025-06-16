@@ -1,4 +1,7 @@
 import CameraComponent from "@/components/Camera/Camera";
+import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import { addPhotoUri } from "@/redux/reducers/photoSlice";
+import { useRouter } from "expo-router";
 import { useState } from "react";
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
@@ -7,16 +10,19 @@ import AntDesign from "@expo/vector-icons/AntDesign";
 
 export default function CreateScreen() {
   const [cameraOpen, setCameraOpen] = useState(true);
-  const [photoUri, setPhotoUri] = useState<string | null>(null);
+  const photoUris = useAppSelector((state) => state.photo.photoUris);
+  const router = useRouter();
+  const dispatch = useAppDispatch();
 
   const handlePhotoTaken = (uri: string) => {
-    setPhotoUri(uri);
+    dispatch(addPhotoUri(uri));
     setCameraOpen(false);
   };
 
   const handlePublish = () => {
-    if (!photoUri) return;
-    console.log("Публікація фото:", photoUri);
+    if (!photoUris) return;
+    setCameraOpen(true);
+    router.replace("/(tabs)/home");
   };
 
   if (cameraOpen) {
@@ -31,10 +37,10 @@ export default function CreateScreen() {
   return (
     <View style={styles.container}>
       <View style={styles.previewContainer}>
-        {photoUri && (
+        {photoUris.length > 0 && (
           <Image
             resizeMode="cover"
-            source={{ uri: photoUri }}
+            source={{ uri: photoUris[photoUris.length - 1] }}
             style={styles.preview}
           />
         )}
