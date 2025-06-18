@@ -2,8 +2,8 @@ import CameraComponent from "@/components/Camera/Camera";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { addPhotoUri } from "@/redux/reducers/photoSlice";
 import * as Location from "expo-location";
-import { useRouter } from "expo-router";
-import { useState } from "react";
+import { useFocusEffect, useRouter } from "expo-router";
+import { useCallback, useState } from "react";
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 // Icons
@@ -14,6 +14,15 @@ export default function CreateScreen() {
   const photoUris = useAppSelector((state) => state.photo.photoUris);
   const router = useRouter();
   const dispatch = useAppDispatch();
+
+  useFocusEffect(
+    useCallback(() => {
+      setCameraOpen(true);
+      return () => {
+        setCameraOpen(false);
+      };
+    }, [])
+  );
 
   const getLocationName = async (latitude: number, longitude: number) => {
     const addresses = await Location.reverseGeocodeAsync({
