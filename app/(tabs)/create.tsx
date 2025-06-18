@@ -1,6 +1,7 @@
 import CameraComponent from "@/components/Camera/Camera";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { addPhotoUri } from "@/redux/reducers/photoSlice";
+import * as Location from "expo-location";
 import { useRouter } from "expo-router";
 import { useState } from "react";
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
@@ -13,6 +14,18 @@ export default function CreateScreen() {
   const photoUris = useAppSelector((state) => state.photo.photoUris);
   const router = useRouter();
   const dispatch = useAppDispatch();
+
+  const getLocationName = async (latitude: number, longitude: number) => {
+    const addresses = await Location.reverseGeocodeAsync({
+      latitude,
+      longitude,
+    });
+    if (addresses.length > 0) {
+      const { city, region, country } = addresses[0];
+      return `${city}, ${region}, ${country}`;
+    }
+    return "Невідоме місце";
+  };
 
   const handlePhotoTaken = (uri: string) => {
     dispatch(addPhotoUri(uri));

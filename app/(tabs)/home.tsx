@@ -1,42 +1,98 @@
-import { FlatList, Image, StyleSheet, Text, View } from "react-native";
+import { useRouter } from "expo-router";
+import {
+  FlatList,
+  Image,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store";
 
+// Icons
+import { EvilIcons } from "@expo/vector-icons";
+
 export default function HomeScreen() {
-  const { user } = useSelector((state: RootState) => state.auth);
   const photoUris = useSelector((state: RootState) => state.photo.photoUris);
+  const router = useRouter();
+
   console.log("Публікація фото:", photoUris);
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.text}>Вийти</Text>
-      {user && <Text style={styles.text}>Привіт, {user.displayName}!</Text>}
-      {photoUris && (
+    <View style={styles.bgContainer}>
+      <View style={styles.container}>
         <FlatList
           data={photoUris}
-          keyExtractor={(item, index) => index.toString()}
+          keyExtractor={(item, indx) => indx.toString()}
           renderItem={({ item }) => (
-            <Image source={{ uri: item }} style={styles.preview} />
+            <View style={styles.imageContainer}>
+              <Image source={{ uri: item }} style={styles.image} />
+              <View>
+                <Text style={styles.title}>Текст під фото</Text>
+              </View>
+              <View style={styles.infoContainer}>
+                <View style={styles.btnContainer}>
+                  <TouchableOpacity
+                    onPress={() => router.push("/post/comments")}
+                  >
+                    <EvilIcons name="comment" size={24} color="black" />
+                    <Text style={styles.title}>159</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    onPress={() => router.push("/post/comments")}
+                  >
+                    <EvilIcons name="like" size={24} color="black" />
+                    <Text style={styles.title}>400</Text>
+                  </TouchableOpacity>
+                </View>
+                <View style={styles.btnContainer}>
+                  <TouchableOpacity onPress={() => router.push("/post/map")}>
+                    <EvilIcons name="location" size={24} color="black" />
+                    <Text style={styles.title}>Київ</Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+            </View>
           )}
         />
-      )}
+      </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
+  bgContainer: {
     flex: 1,
-    marginHorizontal: 20,
+    justifyContent: "center",
+    backgroundColor: "#FFF",
   },
-  preview: {
-    width: "100%",
-    height: 240,
-    marginBottom: 20,
+  container: {
+    marginHorizontal: 16,
+  },
+  imageContainer: {
+    marginBottom: 37,
+  },
+  image: {
+    height: 200,
+    marginBottom: 8,
     borderRadius: 10,
   },
-  text: {
-    fontSize: 20,
-    color: "#000",
+  title: {
+    fontFamily: "Roboto-Regular",
+    fontStyle: "normal",
+    fontWeight: 400,
+    fontSize: 16,
+    marginBottom: 10,
+  },
+  infoContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    // backgroundColor: "yellow",
+  },
+  btnContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    // backgroundColor: "red",
   },
 });
