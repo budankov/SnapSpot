@@ -30,9 +30,7 @@ export default function CameraComponent({
   if (!permission.granted) {
     return (
       <View style={styles.container}>
-        <Text style={styles.message}>
-          Нам потрібен ваш дозвіл, щоб показати камеру.
-        </Text>
+        <Text>Нам потрібен ваш дозвіл, щоб показати камеру.</Text>
         <Button onPress={requestPermission} title="Надати дозвіл" />
       </View>
     );
