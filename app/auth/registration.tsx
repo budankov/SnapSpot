@@ -39,6 +39,7 @@ export default function RegistrationScreen() {
       });
     }
   }, [error]);
+  
   const submitForm = () => {
     dispatch(
       signUpUser({

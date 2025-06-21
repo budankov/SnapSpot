@@ -33,6 +33,8 @@ export const signUpUser = createAsyncThunk(
 
       await user.reload();
 
+      console.log("Full userCredential response:", userCredential);
+
       return {
         uid: user.uid,
         email: user.email,

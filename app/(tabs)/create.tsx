@@ -1,6 +1,5 @@
 import CameraComponent from "@/components/Camera/Camera";
-import { useAppDispatch, useAppSelector } from "@/redux/hooks";
-import { addPhotoUri } from "@/redux/reducers/photoSlice";
+import { useAppSelector } from "@/redux/hooks";
 import * as Location from "expo-location";
 import { useFocusEffect, useRouter } from "expo-router";
 import { useCallback, useState } from "react";
@@ -16,25 +15,34 @@ import {
 } from "react-native";
 
 // Icons
+import { db } from "@/firebase/firebaseConfig";
+import { RootState } from "@/redux/store";
 import { EvilIcons } from "@expo/vector-icons";
 import AntDesign from "@expo/vector-icons/AntDesign";
+import { addDoc, collection, serverTimestamp } from "firebase/firestore";
 
 export default function CreateScreen() {
   const [cameraOpen, setCameraOpen] = useState(true);
+  const [photoUri, setPhotoUri] = useState<string | null>(null);
   const [name, setName] = useState("");
   const [locationValue, setLocationValue] = useState("");
+  const [coords, setCoords] = useState<{
+    latitude: number;
+    longitude: number;
+  } | null>(null);
 
-  const photoUris = useAppSelector((state) => state.photo.photoUris);
+  const { user } = useAppSelector((state: RootState) => state.auth);
   const router = useRouter();
-  const dispatch = useAppDispatch();
 
   useFocusEffect(
     useCallback(() => {
       setCameraOpen(true);
       return () => {
         setCameraOpen(false);
-        setName(name);
+        setName("");
         setLocationValue("");
+        setCoords(null);
+        setPhotoUri(null);
       };
     }, [])
   );
@@ -47,10 +55,12 @@ export default function CreateScreen() {
     }
 
     const location = await Location.getCurrentPositionAsync({});
-    const addresses = await Location.reverseGeocodeAsync({
+    setCoords({
       latitude: location.coords.latitude,
       longitude: location.coords.longitude,
     });
+
+    const addresses = await Location.reverseGeocodeAsync(location.coords);
 
     if (addresses.length > 0) {
       const { street, name, city, country } = addresses[0];
@@ -66,14 +76,43 @@ export default function CreateScreen() {
   };
 
   const handlePhotoTaken = (uri: string) => {
-    dispatch(addPhotoUri(uri));
+    setPhotoUri(uri);
     setCameraOpen(false);
   };
 
+  const uploadPostToServer = async () => {
+    try {
+      const title = name;
+
+      if (!user?.uid || !photoUri || !coords) return;
+
+      await addDoc(collection(db, "posts"), {
+        uid: user.uid,
+        photoURL: photoUri,
+        title,
+        location: {
+          name: locationValue,
+          coords,
+        },
+        createdAt: serverTimestamp(),
+        commentsCount: 0,
+        likes: [],
+      });
+
+      setPhotoUri(null);
+      setName("");
+      setLocationValue("");
+      setCoords(null);
+      setCameraOpen(true);
+      router.replace("/(tabs)/home");
+    } catch (err) {
+      console.error("Помилка при завантаженні поста:", err);
+    }
+  };
+
   const handlePublish = () => {
-    if (!photoUris) return;
-    setCameraOpen(true);
-    router.replace("/(tabs)/home");
+    if (!photoUri || !name || !coords) return;
+    uploadPostToServer();
   };
 
   if (cameraOpen) {
@@ -92,10 +131,10 @@ export default function CreateScreen() {
         behavior={Platform.OS === "ios" ? "padding" : "height"}
       >
         <View style={styles.previewContainer}>
-          {photoUris.length > 0 && (
+          {photoUri && (
             <Image
               resizeMode="cover"
-              source={{ uri: photoUris[photoUris.length - 1] }}
+              source={{ uri: photoUri }}
               style={styles.preview}
             />
           )}
