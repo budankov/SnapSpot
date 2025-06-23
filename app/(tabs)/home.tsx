@@ -1,18 +1,19 @@
 import { db } from "@/firebase/firebaseConfig";
 import { useAppSelector } from "@/redux/hooks";
 import { EvilIcons } from "@expo/vector-icons";
-import { useRouter } from "expo-router";
+import { useFocusEffect, useRouter } from "expo-router";
 import {
   arrayRemove,
   arrayUnion,
   collection,
   doc,
+  getCountFromServer,
   onSnapshot,
   orderBy,
   query,
   updateDoc,
 } from "firebase/firestore";
-import { useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import {
   Dimensions,
   FlatList,
@@ -31,38 +32,45 @@ export default function HomeScreen() {
   const { user } = useAppSelector((state) => state.auth);
   const router = useRouter();
 
-  useEffect(() => {
-    const q = query(collection(db, "posts"), orderBy("createdAt", "desc")); // можна додати сортування
+  useFocusEffect(
+    useCallback(() => {
+      const q = query(collection(db, "posts"), orderBy("createdAt", "desc"));
 
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-      const postData = snapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
-      setPosts(postData);
-    });
+      const unsubscribe = onSnapshot(q, async (snapshot) => {
+        const postsWithCounts = await Promise.all(
+          snapshot.docs.map(async (doc) => {
+            const post = { id: doc.id, ...doc.data() };
+            const commentsRef = collection(db, "posts", doc.id, "comments");
+            const countSnap = await getCountFromServer(commentsRef);
+            return {
+              ...post,
+              commentsCount: countSnap.data().count,
+            };
+          })
+        );
 
-    return () => unsubscribe();
-  }, []);
+        setPosts(postsWithCounts);
+      });
+
+      return () => unsubscribe();
+    }, [])
+  );
 
   const toggleLike = async (postId: string, hasLiked: boolean) => {
     if (!user?.uid) return;
 
     const postRef = doc(db, "posts", postId);
-
     try {
       await updateDoc(postRef, {
         likes: hasLiked ? arrayRemove(user.uid) : arrayUnion(user.uid),
       });
 
-      // Миттєве оновлення локального стану
       setPosts((prevPosts) =>
         prevPosts.map((post) => {
           if (post.id === postId) {
             const updatedLikes = hasLiked
               ? post.likes.filter((id: string) => id !== user.uid)
               : [...(post.likes || []), user.uid];
-
             return { ...post, likes: updatedLikes };
           }
           return post;
@@ -93,7 +101,12 @@ export default function HomeScreen() {
                   <View style={styles.btnContainer}>
                     <TouchableOpacity
                       style={styles.btn}
-                      onPress={() => router.push("/post/comments")}
+                      onPress={() =>
+                        router.push({
+                          pathname: "/post/comments",
+                          params: { postId: item.id },
+                        })
+                      }
                     >
                       <EvilIcons
                         style={styles.icon}
@@ -125,8 +138,8 @@ export default function HomeScreen() {
                         router.push({
                           pathname: "/post/map",
                           params: {
-                            lat: item.location?.coords?.latitude,
-                            lng: item.location?.coords?.longitude,
+                            lat: item.location.coords.latitude.toString(),
+                            lng: item.location.coords.longitude.toString(),
                           },
                         })
                       }

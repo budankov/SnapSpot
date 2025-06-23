@@ -179,7 +179,6 @@ export default function CreateScreen() {
                 {locationValue ? locationValue : "Додати розташування"}
               </Text>
             </TouchableOpacity>
-            <View style={{ flex: 1 }}></View>
             <TouchableOpacity
               style={styles.submitBtn}
               activeOpacity={0.8}
