@@ -1,50 +1,105 @@
-# Welcome to your Expo app 👋
+<h1 align="center">📸 SnapSpot</h1>
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+# 🌍 Simple Social Photo App (pet project)
 
-## Get started
+**SnapSpot** — це pet-проєкт на базі **React Native + Expo**, що імітує базову функціональність Instagram:  
+авторизація через Firebase, створення фото-карток з геолокацією, перегляд стрічки, лайки, коментарі та профіль користувача.
 
-1. Install dependencies
+---
 
-   ```bash
-   npm install
-   ```
+## 🔐 Аутентифікація
 
-2. Start the app
+- Реалізовано логін та реєстрацію через **Firebase Auth**.
+- 
+<p float="left">
+  <img src="https://i.postimg.cc/SKB6P1xG/photo-2025-08-04-20-11-10.jpg" width="300" />
+  <img src="https://i.postimg.cc/fbt7BQDL/photo-2025-08-04-20-11-08.jpg" width="300" />
+</p>
 
-   ```bash
-   npx expo start
-   ```
+---
 
-In the output, you'll find options to open the app in a
+## 🏠 Домашня сторінка
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+- Стрічка постів від усіх користувачів з Firebase Firestore.
+- Можливість поставити **лайк** або залишити **коментар**.
+- Перехід на **карту** з місцем зйомки поста.
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+<p float="left">
+  <img src="https://i.postimg.cc/4NP131WJ/photo-2025-08-04-20-11-04.jpg" width="300" />
+</p>
 
-## Get a fresh project
+---
 
-When you're ready, run:
+## 📷 Створення поста
 
-```bash
-npm run reset-project
-```
+- Вбудована **камера** (з перемиканням фронтальної/основної).
+- Фото зберігається тимчасово до підтвердження.
+- Автоматичне визначення **геолокації** через **expo-location** та перетворення в адресу.
+- Після публікації — збереження поста у Firestore.
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+<p float="left">
+  <img src="https://i.postimg.cc/SxKfYzPc/photo-2025-08-04-20-11-07.jpg" width="300" />
+  <img src="https://i.postimg.cc/pL1YfLN4/photo-2025-08-04-20-11-07-1.jpg" width="300" />
+</p>
 
-## Learn more
+---
 
-To learn more about developing your project with Expo, look at the following resources:
+## 💬 Коментарі
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+- Можна переглядати та залишати коментарі до фото.
+- Коментарі зберігаються в окремій підколекції Firestore.
+  
+<p float="left">
+  <img src="https://i.postimg.cc/L4zTcSfg/photo-2025-08-04-20-11-03.jpg" width="300" />
+</p>
 
-## Join the community
+---
 
-Join our community of developers creating universal apps.
+## 🗺️ Перегляд карти
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+- При натисканні на пост — відкривається **карта** з позначкою місця зйомки.
+- Карта реалізована через **react-native-maps** (використовуються Apple Maps на iOS).
+
+<p float="left">
+  <img src="https://i.postimg.cc/mkGSPpxr/photo-2025-08-04-20-10-52.jpg" width="300" />
+</p>
+
+---
+
+## 👤 Профіль користувача
+
+- Виводяться всі пости, створені поточним користувачем.
+- Можливість вийти з акаунта.
+
+<p float="left">
+  <img src="https://i.postimg.cc/qqXxyc0x/photo-2025-08-04-20-11-00.jpg" width="300" />
+</p>
+
+---
+
+## ⚙️ Технології та бібліотеки
+
+- 📦 **React Native + Expo**
+- 🔥 **Firebase** (Authentication + Firestore)
+- 📷 **expo-camera** — робота з камерою
+- 🗺️ **expo-location** + **react-native-maps** — робота з геолокацією
+- 🧭 **expo-router** — сучасна навігація на основі файлової структури
+- 🧠 **Redux Toolkit** — глобальний стан для постів та користувача
+  
+---
+
+## 📁 Структура зберігання в Firestore
+
+- `users` — дані користувача
+- `posts` — глобальна колекція постів (для стрічки)
+- `users/{userId}/posts` — окрема колекція постів користувача
+- `posts/{postId}/comments` — підколекція коментарів до поста
+
+---
+
+## 🚀 Особливості реалізації
+
+- 🔁 **Глобальна перевірка авторизації** через layout у `expo-router`
+- 🧭 **Навігація без react-navigation** — виключно `expo-router`
+- 📸 **Камера** з можливістю повторного знімку
+- 📌 **Автоматичне визначення адреси з координат**
