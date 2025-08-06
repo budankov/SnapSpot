@@ -45,6 +45,12 @@
         "projectId": "456e56a8-bd1c-4e7f-87e3-a76e60ec1322"
       }
     },
-    "owner": "budankov"
+    "owner": "budankov",
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/456e56a8-bd1c-4e7f-87e3-a76e60ec1322"
+    }
   }
 }
